@@ -1,0 +1,23 @@
+マルチプロセスで .nfs が処分できないエラーを非表示にするための変更
+
+
+変更するファイル:
+???/anaconda3/envs/pytorch/lib/python3.6/multiprocessing/util.py
+
+
+修正箇所: 262行目
+before <<<<<
+            except Exception:
+                import traceback
+                traceback.print_exc()
+
+after  >>>>>
+            except IOError as e:
+                if e.errno == 16:
+                    print('[Warning] IOError (Errno 16) is caught in multiprocessing; %s -> %s' % (e.strerror, e.filename))
+                else:
+                    import traceback
+                    traceback.print_exc()
+            except Exception:
+                import traceback
+                traceback.print_exc()
